@@ -1,4 +1,7 @@
-#include <stdio.h>
-#include <stdlib.h>		// rand() ÇÔ¼ö »ç¿ë
-#include <time.h>			// time() ÇÔ¼ö »ç¿ë
-extern int playRussianRoulette(int nTurns = 2, int nBullets = 1);
+#ifndef RUSSIAN_ROULETTE_H
+#define RUSSIAN_ROULETTE_H
+
+// í•¨ìˆ˜ ì„ ì–¸
+extern int playRussianRoulette(int nTurns, int nBullets);
+
+#endif
