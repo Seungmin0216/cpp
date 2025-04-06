@@ -1,125 +1,135 @@
 #include "MineSweeper.h"
-#define DIM	9
+#define DIM    9
 
 enum LabelType { Empty = 0, Bomb = 9 };
 enum MaskType { Hide = 0, Open, Flag };
-static int	MineMapMask[DIM][DIM];		// Hide, Open, Flag
-static int	MineMapLabel[DIM][DIM];		// 0~8, 9(Bomb)
-static int	nx = DIM, ny = DIM;
-static int	nBomb = DIM;
+static int MineMapMask[DIM][DIM];        // Hide, Open, Flag
+static int MineMapLabel[DIM][DIM];        // 0~8, 9(Bomb)
+static int nx = DIM, ny = DIM;
+static int nBomb = DIM;
 
-// ¿©·¯ °¡Áö ÀÛÀº ÇÔ¼öµé. ¸Å¿ì Áß¿äÇÔ
-inline int&	mask(int x, int y) { return MineMapMask[y][x]; }
-inline int&	label(int x, int y) { return MineMapLabel[y][x]; }
-inline bool	isValid(int x, int y) { return (x >= 0 && x<nx && y >= 0 && y<ny); }
-inline bool	isBomb(int x, int y) { return isValid(x, y) && label(x, y) == Bomb; }
-inline bool	isEmpty(int x, int y) { return isValid(x, y) && label(x, y) == Empty; }
+// ê²Œì„ ìƒíƒœ ì¶œë ¥ í•¨ìˆ˜. í™”ë©´ ê°±ì‹ 
+inline int& mask(int x, int y) { return MineMapMask[y][x]; }
+inline int& label(int x, int y) { return MineMapLabel[y][x]; }
+inline bool isValid(int x, int y) { return (x >= 0 && x < nx && y >= 0 && y < ny); }
+inline bool isBomb(int x, int y) { return isValid(x, y) && label(x, y) == Bomb; }
+inline bool isEmpty(int x, int y) { return isValid(x, y) && label(x, y) == Empty; }
 
-static void dig(int x, int y) {			// (x,y)¸¦ ÆÄ´Â(¿©´Â) ÇÔ¼ö
-	if (isValid(x, y) && mask(x, y) != Open) {
-		mask(x, y) = Open;
-		if (label(x, y) == 0) {
-			dig(x - 1, y - 1);
-			dig(x - 1, y);
-			dig(x - 1, y + 1);
-			dig(x, y - 1);
-			dig(x, y + 1);
-			dig(x + 1, y - 1);
-			dig(x + 1, y);
-			dig(x + 1, y + 1);
-		}
-	}
+static void dig(int x, int y) {            // (x, y) ìœ„ì¹˜ë¥¼ ê³µê°œí•˜ëŠ” í•¨ìˆ˜
+    if (isValid(x, y) && mask(x, y) != Open) {
+        mask(x, y) = Open;
+        if (label(x, y) == 0) {
+            dig(x - 1, y - 1);
+            dig(x - 1, y);
+            dig(x - 1, y + 1);
+            dig(x, y - 1);
+            dig(x, y + 1);
+            dig(x + 1, y - 1);
+            dig(x + 1, y);
+            dig(x + 1, y + 1);
+        }
+    }
 }
-static void mark(int x, int y) {			// (x,y)¿¡ ±ê¹ßÀ» ²È´Â ÇÔ¼ö
-	if (isValid(x, y) && mask(x, y) == Hide)
-		mask(x, y) = Flag;
+static void mark(int x, int y) {            // (x, y) ìœ„ì¹˜ì— í”Œë˜ê·¸ë¥¼ ì„¤ì •í•˜ëŠ” í•¨ìˆ˜
+    if (isValid(x, y) && mask(x, y) == Hide)
+        mask(x, y) = Flag;
 }
-static int getBombCount() {				// ±ê¹ßÀÇ ¼ö¸¦ °è»êÇÏ´Â ÇÔ¼ö
-	int count = 0;
-	for (int y = 0; y<ny; y++)
-		for (int x = 0; x<nx; x++)
-			if (mask(x, y) == Flag) count++;
-	return count;
+static int getBombCount() {                // í”Œë˜ê·¸ ê°œìˆ˜ë¥¼ ì„¸ëŠ” í•¨ìˆ˜
+    int count = 0;
+    for (int y = 0; y < ny; y++)
+        for (int x = 0; x < nx; x++)
+            if (mask(x, y) == Flag) count++;
+    return count;
 }
-static void print() {					// Áö·Ú ¸ÊÀÇ È­¸é Ãâ·Â ÇÔ¼ö
-	system("cls");
-	printf("   ¹ß°ß:%2d   ÀüÃ¼:%2d\n", getBombCount(), nBomb);
-	printf("   ¨ç¨è¨é¨ê¨ë¨ì¨í¨î¨ï\n");
-	for (int y = 0; y<ny; y++) {
-		printf("%2c ", 'A' + y);
-		for (int x = 0; x < nx; x++) {
-			if (mask(x, y) == Hide)	printf("¡à");		// ÆÄÁö ¾ÊÀº °÷
-			else if (mask(x, y) == Flag) printf("¢´");	// Áö·Ú¿¹»ó ÀÚ¸®
-			else {									// ÆÇ ÀÚ¸®
-				if (isBomb(x, y)) printf("¡Ø");		// 9: Æø¹ß!!
-				else if (isEmpty(x, y)) printf("  ");	// 0: ºóÄ­Ç¥½Ã
-				else printf("%2d", label(x, y));		// 1~8: ¼ıÀÚ Ç¥½Ã
-			}
-		}
-		printf("\n");
-	}
+static void print() {                    // ê²Œì„ ìƒíƒœ ì¶œë ¥ í•¨ìˆ˜
+    system("cls");
+    printf("   Flag: %2d   Total: %2d\n", getBombCount(), nBomb);
+    printf("   ê²Œì„íŒ\n");
+    for (int y = 0; y < ny; y++) {
+        printf("%2c ", 'A' + y);
+        for (int x = 0; x < nx; x++) {
+            if (mask(x, y) == Hide)    printf("â– ");        // ìˆ¨ê¹€ ìƒíƒœ
+            else if (mask(x, y) == Flag) printf("â˜…");    // í”Œë˜ê·¸ ìƒíƒœ
+            else {                                    // ê³µê°œ ìƒíƒœ
+                if (isBomb(x, y)) printf("â˜ ");        // 9: í­íƒ„!!
+                else if (isEmpty(x, y)) printf("  ");    // 0: ë¹ˆ ì¹¸
+                else printf("%2d", label(x, y));        // 1~8: ì£¼ë³€ í­íƒ„ ê°œìˆ˜
+            }
+        }
+        printf("\n");
+    }
 }
-static int countNbrBombs(int x, int y) {	// ÀÎÁ¢ÇÑ Áö·ÚÀÇ ¼ö °è»ê ÇÔ¼ö
-	int count = 0;
-	for (int yy = y - 1; yy <= y + 1; yy++)
-		for (int xx = x - 1; xx <= x + 1; xx++)
-			if (isValid(xx, yy) && label(xx, yy) == Bomb)
-				count++;
-	return count;
+static int countNbrBombs(int x, int y) {    // (x, y) ì£¼ë³€ì˜ í­íƒ„ ê°œìˆ˜ë¥¼ ì„¸ëŠ” í•¨ìˆ˜
+    int count = 0;
+    for (int yy = y - 1; yy <= y + 1; yy++)
+        for (int xx = x - 1; xx <= x + 1; xx++)
+            if (isValid(xx, yy) && label(xx, yy) == Bomb)
+                count++;
+    return count;
 }
 static void init(int total = 9) {
-	srand((unsigned int)time(NULL));
-	for (int y = 0; y<ny; y++)
-		for (int x = 0; x<nx; x++) {			// Áö·Ú¸Ê, ¸¶½ºÅ© ÃÊ±âÈ­
-			mask(x, y) = Hide;
-			label(x, y) = 0;
-		}
-	nBomb = total;
-	for (int i = 0; i<nBomb; i++) {		// Áö·Ú ¸Å¼³(total°³)
-		int x, y;
-		do {
-			x = rand() % nx;
-			y = rand() % ny;
-		} while (label(x, y) != Empty);
-		label(x, y) = Bomb;
-	}
-	for (int y = 0; y<ny; y++)			// ÀÎÁ¢ÇÑ Áö·ÚÀÇ ¼ö °è»ê
-		for (int x = 0; x<nx; x++)
-			if (label(x, y) == Empty)
-				label(x, y) = countNbrBombs(x, y);
+    srand((unsigned int)time(NULL));
+    for (int y = 0; y < ny; y++)
+        for (int x = 0; x < nx; x++) {            // ì§€ë„ë¥¼, ì´ˆê¸°í™”
+            mask(x, y) = Hide;
+            label(x, y) = 0;
+        }
+    nBomb = total;
+    for (int i = 0; i < nBomb; i++) {        // í­íƒ„ ë°°ì¹˜ (total ê°œìˆ˜ë§Œí¼)
+        int x, y;
+        do {
+            x = rand() % nx;
+            y = rand() % ny;
+        } while (label(x, y) != Empty);
+        label(x, y) = Bomb;
+    }
+    for (int y = 0; y < ny; y++)            // ì£¼ë³€ í­íƒ„ ê°œìˆ˜ ê³„ì‚°
+        for (int x = 0; x < nx; x++)
+            if (label(x, y) == Empty)
+                label(x, y) = countNbrBombs(x, y);
 }
-static bool getPos(int& x, int& y) {		// Å°º¸µå ÁÂÇ¥ ÀÔ·Â ÇÔ¼ö 
-	printf("\nÁö·Ú(P)Çà(A-I)¿­(1-9)\n      ÀÔ·Â --> ");
-	bool isBomb = false;
-	y = toupper(getch()) - 'A';			// 'a' -> 'A' 'A' --> 0
-	if (y == 'P' - 'A') {
-		isBomb = true;
-		y = toupper(getche()) - 'A';		// 'a' -> 'A' 'A' --> 0
-	}
-	x = getch() - '1';					// '1' --> 1
-	return isBomb;
+static bool getPos(int& x, int& y) {        // ì‚¬ìš©ì ì…ë ¥ì„ ë°›ëŠ” í•¨ìˆ˜ 
+    printf("\nìœ„ì¹˜ë¥¼ ì„ íƒí•˜ì„¸ìš” (A-I)ì™€ (1-9)\n      ì…ë ¥ --> ");
+    bool isBomb = false;
+    y = toupper(getch()) - 'A';            // 'a' -> 'A' 'A' --> 0
+    if (y == 'P' - 'A') {
+        isBomb = true;
+        y = toupper(getche()) - 'A';        // 'a' -> 'A' 'A' --> 0
+    }
+    x = getch() - '1';                    // '1' --> 1
+    return isBomb;
 }
-static int checkDone() {				// °ÔÀÓ Á¾·á °Ë»ç ÇÔ¼ö
-	int count = 0;
-	for (int y = 0; y<ny; y++)
-		for (int x = 0; x<nx; x++) {
-			if (mask(x, y) != Open) count++;
-			else if (isBomb(x, y)) return -1;
-		}
-	return (count == nBomb) ? 1 : 0;
+static int checkDone() {                // ê²Œì„ ì¢…ë£Œ ì²´í¬ í•¨ìˆ˜
+    int count = 0;
+    for (int y = 0; y < ny; y++)
+        for (int x = 0; x < nx; x++) {
+            if (mask(x, y) != Open) count++;
+            else if (isBomb(x, y)) return -1;
+        }
+    return (count == nBomb) ? 1 : 0;
 }
-void playMineSweeper(int total) {		// Áö·Ú Ã£±â ÁÖ ÇÔ¼ö
-	int x, y, status;
-	init(total);					// Áö·Ú ¸Ê°ú ¸¶½ºÅ© ÃÊ±âÈ­
-	do {
-		print();
-		bool isBomb = getPos(x, y);	// À§Ä¡ ÀÔ·Â
-		if (isBomb) mark(x, y);		// ±ê¹ß À§Ä¡ÀÌ¸é ==> mark()È£Ãâ
-		else		  dig(x, y);			// ¾Æ´Ï¸é ==> dig()È£Ãâ
-		status = checkDone();		// °ÔÀÓ Á¾·á »óÈ² °Ë»ç
-	} while (status == 0);			// ÁøÇàÁßÀÌ¸é ¹İº¹
-	print();
-	if (status < 0) 				// ½ÇÆĞ/¼º°ø Ãâ·Â
-		printf("\n½ÇÆĞ: Áö·Ú Æø¹ß!!!\n\n");
-	else	printf("\n¼º°ø: Å½»ö ¼º°ø!!!\n\n");
+void playMineSweeper(int total) {        // ê²Œì„ ì§„í–‰ í•¨ìˆ˜
+    int x, y, status;
+    init(total);                    // ê²Œì„íŒ ì´ˆê¸°í™”
+    do {
+        print();
+        bool isBomb = getPos(x, y);    // ìœ„ì¹˜ ì…ë ¥
+        if (isBomb) mark(x, y);        // í”Œë˜ê·¸ ì„¤ì •
+        else          dig(x, y);        // ê³µê°œ
+        status = checkDone();        // ê²Œì„ ì¢…ë£Œ ì²´í¬
+    } while (status == 0);            // ê²Œì„ì´ ëë‚  ë•Œê¹Œì§€ ë°˜ë³µ
+    print();
+    if (status < 0)                 // í­íƒ„ì„ í„°ëœ¨ë¦° ê²½ìš°
+        printf("\nê²Œì„ ì˜¤ë²„: í­íƒ„ì„ ë°Ÿì•˜ìŠµë‹ˆë‹¤!!!\n\n");
+    else    printf("\nê²Œì„ ìŠ¹ë¦¬: ëª¨ë‘ ì°¾ì•˜ìŠµë‹ˆë‹¤!!!\n\n");
+}
+
+int main()
+{
+	system("chcp 65001");
+    int total;
+    printf(" <Mine Sweeper>\n");
+    printf(" ì´ í­íƒ„ ê°œìˆ˜ë¥¼ ì…ë ¥í•˜ì„¸ìš”: ");
+    scanf("%d", &total);
+    playMineSweeper(total);
 }
