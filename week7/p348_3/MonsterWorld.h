@@ -1,8 +1,6 @@
 #pragma once
 #include "Canvas.h"  // Canvas 클래스 포함 (화면 출력용)
 #include "Monster.h" // Monster 클래스 포함
-#include <chrono>         // chrono를 포함하여 시간을 다룰 수 있게 함
-#include <thread>         // this_thread를 포함하여 스레드를 제어할 수 있게 함
 #define DIM  40       // 맵의 크기 (40x40)
 #define MAXMONS 5     // 최대 몬스터 수 (5마리까지)
 

@@ -34,7 +34,7 @@ public:
     }
 
     // 캔버스를 출력하는 함수
-    void print(char *title = "<My Canvas>") {
+    void print(const char *title = "<My Canvas>") {
         // 화면 지우기 (운영체제에 맞춰 동작)
         #if defined(_WIN32) || defined(_WIN64)
             system("cls");  // Windows에서 화면 지우기
