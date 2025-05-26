@@ -2,20 +2,25 @@
 #include "VariousMonsters.h"
 #include <time.h>
 
-void main()
+int main()
 {
 	srand((unsigned int)time(NULL));
 	int w = 16, h = 8;
 	MonsterWorld game(w, h);
 
-	game.add(new Zombie("ÇãÁ¢ÇÑÁ»ºñ", "¡İ", rand() % w, rand() % h));
-	game.add(new Vampire("¹ìÆÄÀÌ¾îÂ¯", "¡Ú", rand() % w, rand() % h));
-	game.add(new KGhost("¾îÂ¼´Ù±Í½Å", "¢¾", rand() % w, rand() % h));
-	game.add(new Jiangshi("¸ø¸Ô¾îµµ°í", "¡ê", rand() % w, rand() % h, true));
-	game.add(new Jiangshi("¸ø¸Ô¾î¼¼·Î", "¢Õ", rand() % w, rand() % h, false));
-	game.add(new Human	("¹Ì·¡ÀÇÀÎ·ù", "¡Ï", rand() % w, rand() % h));
+	// ëª¬ìŠ¤í„° ì¶”ê°€ (ì´ë¦„, ì•„ì´ì½˜, ëœë¤ ìœ„ì¹˜)
+	game.add(new Zombie("ì¢€ë¹„ ì•„ì €ì”¨", "ì¢€", rand() % w, rand() % h));
+	game.add(new Vampire("ë±€íŒŒì´ì–´", "ë±€", rand() % w, rand() % h));
+	game.add(new KGhost("ë„ê¹¨ë¹„", "ë„", rand() % w, rand() % h));
+	game.add(new Jiangshi("ê°•ì‹œ(ì í”„í˜•)", "ê°•", rand() % w, rand() % h, true));
+	game.add(new Jiangshi("ê°•ì‹œ(ê±·ëŠ”í˜•)", "ì‹œ", rand() % w, rand() % h, false));
+	game.add(new Human("ì´ë¡œìš´ ì¸ê°„", "ì¸", rand() % w, rand() % h));
+
+	// ê²Œì„ ì‹¤í–‰ (ìµœëŒ€ 500í„´, ì´ë™ ê°„ê²© 10ms)
 	game.play(500, 10);
-	printf("------°ÔÀÓ Á¾·á-------------------\n");
+
+	printf("------ê²Œì„ ì¢…ë£Œ-------------------\n");
+	getchar(); // ì¼ì‹œì •ì§€ìš© ì…ë ¥
 	getchar();
-	getchar();
+	return 0;
 }

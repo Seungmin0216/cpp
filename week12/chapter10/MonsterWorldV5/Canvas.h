@@ -5,18 +5,18 @@
 using namespace std;
 
 class Canvas {
-	string line[MAXLINES];	// È­¸é Ãâ·ÂÀ» À§ÇÑ ¹®ÀÚ¿­
-	int xMax, yMax;		// ¸ÊÀÇ Å©±â
+	string line[MAXLINES];	// í™”ë©´ ê° ì¤„ì— í•´ë‹¹í•˜ëŠ” ë¬¸ìì—´
+	int xMax, yMax;			// í™”ë©´ í¬ê¸° (ê°€ë¡œ, ì„¸ë¡œ)
 public:
 	Canvas(int nx = 10, int ny = 10) : xMax(nx), yMax(ny) {
 		for (int y = 0; y < yMax; y++)
 			line[y] = string(xMax * 2, ' ');
 	}
 	void draw(int x, int y, string val) {
-		if (x >= 0 && y >= 0 && x<xMax && y<yMax)
+		if (x >= 0 && y >= 0 && x < xMax && y < yMax)
 			line[y].replace(x * 2, 2, val);
 	}
-	void clear(string val = ". ") {		// µğÆúÆ® ¸Å°³º¯¼ö: °ø¹é 2°³
+	void clear(string val = ". ") {		// ì´ˆê¸°í™” ë¬¸ìì—´ (ê¸°ë³¸ê°’: ì  ë‘ ì¹¸)
 		for (int y = 0; y < yMax; y++)
 			for (int x = 0; x < xMax; x++)
 				draw(x, y, val);
